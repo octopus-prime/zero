@@ -1,0 +1,354 @@
+{
+  "provider": {
+    "name": "person-service"
+  },
+  "consumer": {
+    "name": "client"
+  },
+  "interactions": [
+    {
+      "description": "create person valid",
+      "request": {
+        "method": "POST",
+        "path": "/persons",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "vorname": "Max",
+          "nachname": "Mustermann",
+          "strasse": "Musterstrasse",
+          "hausnummer": "123a",
+          "plz": "12345",
+          "wohnort": "Musterort"
+        }
+      },
+      "response": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "vorname": "Max",
+          "nachname": "Mustermann",
+          "strasse": "Musterstrasse",
+          "hausnummer": "123a",
+          "plz": "12345",
+          "wohnort": "Musterort"
+        },
+        "matchingRules": {
+          "$.body.id": {
+            "match": "type"
+          }
+        }
+      }
+    },
+    {
+      "description": "create person not valid",
+      "request": {
+        "method": "POST",
+        "path": "/persons",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+        }
+      },
+      "response": {
+        "status": 400,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": "Bad Request"
+        }
+      }
+    },
+    {
+      "providerState": "get person",
+      "description": "get person found",
+      "request": {
+        "method": "GET",
+        "path": "/persons/123",
+        "headers": {
+          "Accept": "application/json"
+        },
+        "generators": {
+          "path": {
+            "type": "ProviderState",
+            "expression": "/persons/${id}",
+            "dataType": "STRING"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": "123",
+          "vorname": "Max",
+          "nachname": "Mustermann",
+          "strasse": "Musterstrasse",
+          "hausnummer": "123a",
+          "plz": "12345",
+          "wohnort": "Musterort"
+        },
+        "generators": {
+          "body": {
+            "$.id": {
+              "type": "ProviderState",
+              "expression": "${id}",
+              "dataType": "STRING"
+            }
+          }
+        }
+      }
+    },
+    {
+      "providerState": "get person",
+      "description": "get person not found",
+      "request": {
+        "method": "GET",
+        "path": "/persons/123",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": "Not Found"
+        }
+      }
+    },
+    {
+      "providerState": "get person",
+      "description": "update person found",
+      "request": {
+        "method": "PUT",
+        "path": "/persons/123",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "vorname": "Bruce",
+          "nachname": "Lee"
+        },
+        "generators": {
+          "path": {
+            "type": "ProviderState",
+            "expression": "/persons/${id}",
+            "dataType": "STRING"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": "123",
+          "vorname": "Bruce",
+          "nachname": "Lee",
+          "strasse": "Musterstrasse",
+          "hausnummer": "123a",
+          "plz": "12345",
+          "wohnort": "Musterort"
+        },
+        "generators": {
+          "body": {
+            "$.id": {
+              "type": "ProviderState",
+              "expression": "${id}",
+              "dataType": "STRING"
+            }
+          }
+        }
+      }
+    },
+    {
+      "providerState": "get person",
+      "description": "update person not found",
+      "request": {
+        "method": "PUT",
+        "path": "/persons/123",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "vorname": "Bruce",
+          "nachname": "Lee"
+        }
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": "Not Found"
+        }
+      }
+    },
+    {
+      "providerState": "search persons",
+      "description": "search persons found",
+      "request": {
+        "method": "POST",
+        "path": "/persons/search",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "vorname": "Max",
+          "nachname": "Mustermann"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+          {
+            "id": "123",
+            "vorname": "Max",
+            "nachname": "Mustermann",
+            "strasse": "Musterstrasse",
+            "hausnummer": "123a",
+            "plz": "12345",
+            "wohnort": "Musterort"
+          },
+          {
+            "id": "234",
+            "vorname": "Max",
+            "nachname": "Mustermann",
+            "strasse": "Musterstrasse",
+            "hausnummer": "234a",
+            "plz": "23456",
+            "wohnort": "Musterort"
+          }
+        ],
+        "generators": {
+          "body": {
+            "$[0].id": {
+              "type": "ProviderState",
+              "expression": "${id1}",
+              "dataType": "STRING"
+            },
+            "$[1].id": {
+              "type": "ProviderState",
+              "expression": "${id2}",
+              "dataType": "STRING"
+            }
+          }
+        }
+      }
+    },
+    {
+      "providerState": "search persons",
+      "description": "search persons not found",
+      "request": {
+        "method": "POST",
+        "path": "/persons/search",
+        "headers": {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "vorname": "foo",
+          "nachname": "bar"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": [
+        ]
+      }
+    },
+    {
+      "providerState": "get person",
+      "description": "delete person found",
+      "request": {
+        "method": "DELETE",
+        "path": "/persons/123",
+        "headers": {
+          "Accept": "application/json"
+        },
+        "generators": {
+          "path": {
+            "type": "ProviderState",
+            "expression": "/persons/${id}",
+            "dataType": "STRING"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": "123",
+          "vorname": "Max",
+          "nachname": "Mustermann",
+          "strasse": "Musterstrasse",
+          "hausnummer": "123a",
+          "plz": "12345",
+          "wohnort": "Musterort"
+        },
+        "generators": {
+          "body": {
+            "$.id": {
+              "type": "ProviderState",
+              "expression": "${id}",
+              "dataType": "STRING"
+            }
+          }
+        }
+      }
+    },
+    {
+      "providerState": "get person",
+      "description": "delete person not found",
+      "request": {
+        "method": "DELETE",
+        "path": "/persons/123",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 404,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "error": "Not Found"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pact-specification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+logging:
+  level:
+    com.example.zero: info
+    au.com.dius.pact: info

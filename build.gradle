@@ -1,0 +1,45 @@
+plugins {
+    id 'org.springframework.boot' version '2.4.0-M3'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id "com.github.ben-manes.versions" version "0.33.0"
+    id 'java'
+    id 'idea'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencies {
+    annotationProcessor group: 'org.projectlombok', name: 'lombok'
+    compileOnly group: 'org.projectlombok', name: 'lombok'
+
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.4.0.Final'
+    compileOnly group: 'org.mapstruct', name: 'mapstruct', version: '1.4.0.Final'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb-reactive'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-webflux-core', version: '1.4.7'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-webflux-ui', version: '1.4.7'
+
+    developmentOnly group: 'org.springframework.boot', name: 'spring-boot-devtools'
+
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testImplementation group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo'
+    testImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: '4.1.7'
+}
+
+compileJava {
+    options.compilerArgs += '-Amapstruct.defaultComponentModel=spring'
+}
+
+test {
+    useJUnitPlatform()
+}

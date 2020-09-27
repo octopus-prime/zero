@@ -1,0 +1,55 @@
+{
+  "provider": {
+    "name": "person-service"
+  },
+  "consumer": {
+    "name": "actuator"
+  },
+  "interactions": [
+    {
+      "description": "get info",
+      "request": {
+        "method": "GET",
+        "path": "/actuator/info",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+        }
+      }
+    },
+    {
+      "description": "get health",
+      "request": {
+        "method": "GET",
+        "path": "/actuator/health",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "status": "UP"
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pact-specification": {
+      "version": "3.0.0"
+    },
+    "pact-jvm": {
+      "version": "4.1.7"
+    }
+  }
+}
