@@ -1,0 +1,24 @@
+dist: bionic
+
+language: java
+
+jdk: openjdk11
+
+git:
+  depth: false
+
+addons:
+  sonarcloud:
+    organization: "octopus-prime-github"
+    token:
+      secure: "doyLpCqu0lTAji30IdACjyp/8W53LKcFt7lk3GmujBYDUYTQVlhRf3R8oBdel8qkyo+K32ZyNxV3iYndhPTbmsSb0SXLF877Ukif6y2LilctBDdTKFVN3wHIoJ9sO0FTVM0mgTpdyLc1FjESxNYQvpARyOkGOW9VRkDx3IXPFyWF0efRXN0CcZpxZMDpuXq/aCzMKmAkEY1TIaA/dKn4zP3JqvEqbG7yqKBKKjU93y8YauMVo/6GOgm8DkgkaZW6KW1yLHxeNH01p6l63lNgnMOW01jXXlvGtU2B2VBd/VFUZBnveNUFLaYr1YJL29fFy/atcqyFqHlZvBo4VGBzD6znG4hMF6DRN5oHGycynHyQc0+wN4OavHFKp+ZBFqcpdH0pbG8YZ5JCuIbOy0ZVP4f0/cCcBxRtsshSEH65qQg78a3Q8k1mxgvydTyX5IgHduJWEEAjuxP05ajjiQQgtn0X1IdNHTSKNYV6sB0Bv0iZ3XuM9rCe1mKusIAhkUIJX3Se4Mco35Huvb2CihkND36Z1URlZpM149zsXhxtCMWx4ScVwc5IjS5eJFQswe9aWZUDm62h5YBQtpE85qR5Gama6mmsf1zX8f6nyqy7vuR66ERURApvyF8xgQl2vEHRDYopJd4ev5Ad5lwkSWRUeKYWpnX8OaF9Y1cUqrrA0qg="
+
+script:
+  - ./gradlew clean jacocoTestReport sonarqube
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+    - '$HOME/.gradle'
+    - '.gradle'
