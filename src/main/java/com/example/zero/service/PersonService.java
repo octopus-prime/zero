@@ -1,7 +1,7 @@
 package com.example.zero.service;
 
-import com.example.zero.controller.dto.PersonRequest;
-import com.example.zero.controller.dto.PersonResponse;
+import com.example.zero.controller.PersonRequest;
+import com.example.zero.controller.PersonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

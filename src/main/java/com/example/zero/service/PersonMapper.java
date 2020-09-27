@@ -1,7 +1,7 @@
 package com.example.zero.service;
 
-import com.example.zero.controller.dto.PersonRequest;
-import com.example.zero.controller.dto.PersonResponse;
+import com.example.zero.controller.PersonRequest;
+import com.example.zero.controller.PersonResponse;
 import org.mapstruct.*;
 
 @Mapper

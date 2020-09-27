@@ -6,8 +6,8 @@ import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvide
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactFolder;
-import com.example.zero.controller.dto.PersonRequest;
-import com.example.zero.controller.dto.PersonResponse;
+import com.example.zero.controller.PersonRequest;
+import com.example.zero.controller.PersonResponse;
 import com.example.zero.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;

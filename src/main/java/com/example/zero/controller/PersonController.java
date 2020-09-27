@@ -1,8 +1,5 @@
 package com.example.zero.controller;
 
-import com.example.zero.controller.dto.CreateGroup;
-import com.example.zero.controller.dto.PersonRequest;
-import com.example.zero.controller.dto.PersonResponse;
 import com.example.zero.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

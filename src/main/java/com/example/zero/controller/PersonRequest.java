@@ -1,4 +1,4 @@
-package com.example.zero.controller.dto;
+package com.example.zero.controller;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
