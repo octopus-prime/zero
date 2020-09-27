@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/octopus-prime/zero.svg?branch=master)](https://travis-ci.org/octopus-prime/zero)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=octopus-prime_zero&metric=alert_status)](https://sonarcloud.io/dashboard?id=octopus-prime_zero)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=octopus-prime_zero&metric=coverage)](https://sonarcloud.io/dashboard?id=octopus-prime_zero)
+
 # Getting Started
 
 ### Reference Documentation
