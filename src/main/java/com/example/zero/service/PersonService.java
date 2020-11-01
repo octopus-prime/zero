@@ -64,8 +64,7 @@ public class PersonService {
                 .map(mapper::map);
     }
 
-    public void deletePersons() {
-        repository.deleteAll()
-                .block();
+    public Mono<Void> deletePersons() {
+        return repository.deleteAll();
     }
 }

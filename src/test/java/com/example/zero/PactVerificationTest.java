@@ -59,7 +59,7 @@ class PactVerificationTest {
 
     @BeforeEach
     void setUp() {
-        service.deletePersons();
+        service.deletePersons().block();
     }
 
     @State("get person")
