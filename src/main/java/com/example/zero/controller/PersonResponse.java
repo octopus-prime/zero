@@ -1,34 +1,34 @@
 package com.example.zero.controller;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
 
 @Data
 @SuperBuilder
-@NoArgsConstructor
+@Jacksonized
 public class PersonResponse {
 
     @NotNull
-    private String id;
+    private final String id;
 
     @NotNull
-    private String vorname;
+    private final String vorname;
 
     @NotNull
-    private String nachname;
+    private final String nachname;
 
     @NotNull
-    private String strasse;
+    private final String strasse;
 
     @NotNull
-    private String hausnummer;
+    private final String hausnummer;
 
     @NotNull
-    private String plz;
+    private final String plz;
 
     @NotNull
-    private String wohnort;
+    private final String wohnort;
 }

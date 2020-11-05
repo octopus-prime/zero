@@ -1,34 +1,33 @@
 package com.example.zero.controller;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 @Data
 @SuperBuilder
-@NoArgsConstructor
+@Jacksonized
 public class PersonRequest {
 
     @NotNull(groups = CreateGroup.class)
-    private String vorname;
+    private final String vorname;
 
     @NotNull(groups = CreateGroup.class)
-    private String nachname;
+    private final String nachname;
 
     @NotNull(groups = CreateGroup.class)
-    private String strasse;
+    private final String strasse;
 
     @NotNull(groups = CreateGroup.class)
-    private String hausnummer;
+    private final String hausnummer;
 
     @NotNull(groups = CreateGroup.class)
-//    @Size(min = 5, max = 5, groups = CreateGroup.class)
     @Digits(integer = 5, fraction = 0, groups = CreateGroup.class)
-    private String plz;
+    private final String plz;
 
     @NotNull(groups = CreateGroup.class)
-    private String wohnort;
+    private final String wohnort;
 }
