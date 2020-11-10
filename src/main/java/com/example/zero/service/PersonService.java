@@ -45,7 +45,7 @@ public class PersonService {
         return repository.findById(id)
                 .switchIfEmpty(NOT_FOUND)
                 .doOnNext(person -> mapper.merge(person, dto))
-                .doOnNext(repository::save)
+                .flatMap(repository::save)
                 .map(mapper::map);
     }
 
