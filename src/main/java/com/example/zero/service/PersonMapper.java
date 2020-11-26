@@ -23,7 +23,7 @@ interface PersonMapper {
 
     @DocumentMapping
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void merge(@MappingTarget Person entity, PersonRequest dto);
+    Person merge(@MappingTarget Person entity, PersonRequest dto);
 
     PersonResponse map(Person entity);
 }

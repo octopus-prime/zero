@@ -25,7 +25,7 @@ public class PersonController {
     @Operation(summary = "Create person")
     @PostMapping(path = "persons", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<PersonResponse> createPerson(@Validated(CreateGroup.class) @RequestBody final PersonRequest dto) {
+    public Mono<PersonResponse> createPerson(@Validated(CreateGroup.class) @RequestBody final Mono<PersonRequest> dto) {
         return service.createPerson(dto);
     }
 
@@ -33,20 +33,20 @@ public class PersonController {
     @GetMapping(path = "persons/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Mono<PersonResponse> getPerson(@PathVariable("id") final String id) {
-        return service.getPerson(id);
+        return service.getPerson(Mono.just(id));
     }
 
     @Operation(summary = "Update person")
     @PutMapping(path = "persons/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Mono<PersonResponse> updatePerson(@PathVariable("id") final String id, @Validated @RequestBody final PersonRequest dto) {
-        return service.updatePerson(id, dto);
+    public Mono<PersonResponse> updatePerson(@PathVariable("id") final String id, @Validated @RequestBody final Mono<PersonRequest> dto) {
+        return service.updatePerson(Mono.just(id), dto);
     }
 
     @Operation(summary = "Search persons")
     @PostMapping(path = "persons/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Flux<PersonResponse> searchPersons(@Validated @RequestBody final PersonRequest dto) {
+    public Flux<PersonResponse> searchPersons(@Validated @RequestBody final Mono<PersonRequest> dto) {
         return service.searchPersons(dto);
     }
 
@@ -54,6 +54,6 @@ public class PersonController {
     @DeleteMapping(path = "persons/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Mono<PersonResponse> deletePerson(@PathVariable("id") final String id) {
-        return service.deletePerson(id);
+        return service.deletePerson(Mono.just(id));
     }
 }

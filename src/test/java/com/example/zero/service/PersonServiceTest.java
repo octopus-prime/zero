@@ -2,7 +2,6 @@ package com.example.zero.service;
 
 import com.example.zero.controller.PersonRequest;
 import com.example.zero.controller.PersonResponse;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,11 +15,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static reactor.test.StepVerifier.create;
 
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
@@ -45,19 +45,20 @@ class PersonServiceTest {
             given(repository.save(same(person1))).willReturn(Mono.just(person2));
             given(mapper.map(same(person2))).willReturn(response);
 
-            final PersonResponse result = service.createPerson(request).block();
-
-            then(result).isSameAs(response);
+            create(service.createPerson(Mono.just(request)))
+                    .expectNext(response)
+                    .expectComplete()
+                    .verify();
         }
 
         @Test
-        void error(@Mock final Person person, @Mock final IllegalArgumentException exception) {
+        void error(@Mock final Person person) {
             given(mapper.map(same(request))).willReturn(person);
-            given(repository.save(same(person))).willThrow(exception);
+            given(repository.save(same(person))).willThrow(IllegalArgumentException.class);
 
-            final ThrowingCallable createPerson = () -> service.createPerson(request).block();
-
-            thenThrownBy(createPerson).isSameAs(exception);
+            create(service.createPerson(Mono.just(request)))
+                    .expectError(IllegalArgumentException.class)
+                    .verify();
         }
     }
 
@@ -68,30 +69,35 @@ class PersonServiceTest {
 
         @Test
         void success(@Mock final Person person, @Mock final PersonResponse response) {
-            given(repository.findById(same(id))).willReturn(Mono.just(person));
-            given(mapper.map(same(person))).willReturn(response);
+            given(repository.findById(same(id)))
+                    .willReturn(Mono.just(person));
+            given(mapper.map(same(person)))
+                    .willReturn(response);
 
-            final PersonResponse result = service.getPerson(id).block();
-
-            then(result).isSameAs(response);
+            create(service.getPerson(Mono.just(id)))
+                    .expectNext(response)
+                    .expectComplete()
+                    .verify();
         }
 
         @Test
         void notFound() {
-            given(repository.findById(same(id))).willReturn(Mono.empty());
+            given(repository.findById(same(id)))
+                    .willReturn(Mono.empty());
 
-            final ThrowingCallable getPerson = () -> service.getPerson(id).block();
-
-            thenThrownBy(getPerson).isInstanceOf(ResponseStatusException.class).hasMessage("404 NOT_FOUND");
+            create(service.getPerson(Mono.just(id)))
+                    .expectError(ResponseStatusException.class)
+                    .verify();
         }
 
         @Test
-        void error(@Mock final IllegalArgumentException exception) {
-            given(repository.findById(same(id))).willThrow(exception);
+        void error() {
+            given(repository.findById(same(id)))
+                    .willThrow(IllegalArgumentException.class);
 
-            final ThrowingCallable getPerson = () -> service.getPerson(id).block();
-
-            thenThrownBy(getPerson).isSameAs(exception);
+            create(service.getPerson(Mono.just(id)))
+                    .expectError(IllegalArgumentException.class)
+                    .verify();
         }
     }
 
@@ -106,9 +112,10 @@ class PersonServiceTest {
             given(repository.findAll(Example.of(person))).willReturn(Flux.just(person));
             given(mapper.map(same(person))).willReturn(response);
 
-            final Iterable<PersonResponse> result = service.searchPersons(request).toIterable();
-
-            then(result).contains(response);
+            create(service.searchPersons(Mono.just(request)))
+                    .expectNext(response)
+                    .expectComplete()
+                    .verify();
         }
 
         @Test
@@ -116,19 +123,19 @@ class PersonServiceTest {
             given(mapper.map(same(request))).willReturn(person);
             given(repository.findAll(Example.of(person))).willReturn(Flux.empty());
 
-            final Iterable<PersonResponse> result = service.searchPersons(request).toIterable();
-
-            then(result).isEmpty();
+            create(service.searchPersons(Mono.just(request)))
+                    .expectComplete()
+                    .verify();
         }
 
         @Test
-        void error(@Mock final Person person, @Mock final IllegalArgumentException exception) {
+        void error(@Mock final Person person) {
             given(mapper.map(same(request))).willReturn(person);
-            given(repository.findAll(Example.of(person))).willThrow(exception);
+            given(repository.findAll(Example.of(person))).willThrow(IllegalArgumentException.class);
 
-            final ThrowingCallable searchPersons = () -> service.searchPersons(request).blockFirst();
-
-            thenThrownBy(searchPersons).isSameAs(exception);
+            create(service.searchPersons(Mono.just(request)))
+                    .expectError(IllegalArgumentException.class)
+                    .verify();
         }
     }
 
@@ -139,33 +146,34 @@ class PersonServiceTest {
         private final PersonRequest request = PersonRequest.builder().build();
 
         @Test
-        void success(@Mock final Person person1, @Mock final Person person2, @Mock final PersonResponse response) {
+        void success(@Mock final Person person1, @Mock final Person person2, @Mock final Person person3, @Mock final PersonResponse response) {
             given(repository.findById(same(id))).willReturn(Mono.just(person1));
-            given(repository.save(same(person1))).willReturn(Mono.just(person2));
-            given(mapper.map(same(person2))).willReturn(response);
+            given(mapper.merge(same(person1), same(request))).willReturn(person2);
+            given(repository.save(same(person2))).willReturn(Mono.just(person3));
+            given(mapper.map(same(person3))).willReturn(response);
 
-            final PersonResponse result = service.updatePerson(id, request).block();
-
-            then(result).isSameAs(response);
-            verify(mapper).merge(same(person1), same(request));
+            create(service.updatePerson(Mono.just(id), Mono.just(request)))
+                    .expectNext(response)
+                    .expectComplete()
+                    .verify();
         }
 
         @Test
         void notFound() {
             given(repository.findById(same(id))).willReturn(Mono.empty());
 
-            final ThrowingCallable updatePerson = () -> service.updatePerson(id, request).block();
-
-            thenThrownBy(updatePerson).isInstanceOf(ResponseStatusException.class).hasMessage("404 NOT_FOUND");
+            create(service.updatePerson(Mono.just(id), Mono.just(request)))
+                    .expectError(ResponseStatusException.class)
+                    .verify();
         }
 
         @Test
-        void error(@Mock final IllegalArgumentException exception) {
-            given(repository.findById(same(id))).willThrow(exception);
+        void error() {
+            given(repository.findById(same(id))).willThrow(IllegalArgumentException.class);
 
-            final ThrowingCallable updatePerson = () -> service.updatePerson(id, request).block();
-
-            thenThrownBy(updatePerson).isSameAs(exception);
+            create(service.updatePerson(Mono.just(id), Mono.just(request)))
+                    .expectError(IllegalArgumentException.class)
+                    .verify();
         }
     }
 
@@ -179,28 +187,35 @@ class PersonServiceTest {
             given(repository.findById(same(id))).willReturn(Mono.just(person));
             given(mapper.map(same(person))).willReturn(response);
 
-            final PersonResponse result = service.deletePerson(id).block();
-
-            then(result).isSameAs(response);
+            create(service.deletePerson(Mono.just(id)))
+                    .expectNext(response)
+                    .expectComplete()
+                    .verify();
             verify(repository).delete(same(person));
         }
 
         @Test
         void notFound() {
-            given(repository.findById(same(id))).willReturn(Mono.empty());
+            given(repository.findById(same(id)))
+                    .willReturn(Mono.empty());
 
-            final ThrowingCallable deletePerson = () -> service.deletePerson(id).block();
-
-            thenThrownBy(deletePerson).isInstanceOf(ResponseStatusException.class).hasMessage("404 NOT_FOUND");
+            create(service.deletePerson(Mono.just(id)))
+                    .expectError(ResponseStatusException.class)
+                    .verify();
+            verify(repository, never())
+                    .delete(any());
         }
 
         @Test
-        void error(@Mock final IllegalArgumentException exception) {
-            given(repository.findById(same(id))).willThrow(exception);
+        void error() {
+            given(repository.findById(same(id)))
+                    .willThrow(IllegalArgumentException.class);
 
-            final ThrowingCallable deletePerson = () -> service.deletePerson(id).block();
-
-            thenThrownBy(deletePerson).isSameAs(exception);
+            create(service.deletePerson(Mono.just(id)))
+                    .expectError(IllegalArgumentException.class)
+                    .verify();
+            verify(repository, never())
+                    .delete(any());
         }
     }
 
@@ -208,21 +223,13 @@ class PersonServiceTest {
     class DeletePersons {
 
         @Test
-        void success(@Mock final Mono<Void> nothing) {
-            given(repository.deleteAll()).willReturn(nothing);
+        void success() {
+            given(repository.deleteAll())
+                    .willReturn(Mono.empty());
 
-            final Mono<Void> result = service.deletePersons();
-
-            then(result).isSameAs(nothing);
-        }
-
-        @Test
-        void error(@Mock final IllegalArgumentException exception) {
-            given(repository.deleteAll()).willThrow(exception);
-
-            final ThrowingCallable deletePersons = () -> service.deletePersons();
-
-            thenThrownBy(deletePersons).isSameAs(exception);
+            create(service.deletePersons())
+                    .expectComplete()
+                    .verify();
         }
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
@@ -64,14 +65,14 @@ class PactVerificationTest {
 
     @State("get person")
     Map<String, Object> getPerson() {
-        final PersonResponse person = service.createPerson(PERSON_1).block();
+        final PersonResponse person = service.createPerson(Mono.just(PERSON_1)).block();
         return Map.of("id", person.getId());
     }
 
     @State("search persons")
     Map<String, Object> searchPersons() {
-        final PersonResponse person1 = service.createPerson(PERSON_1).block();
-        final PersonResponse person2 = service.createPerson(PERSON_2).block();
+        final PersonResponse person1 = service.createPerson(Mono.just(PERSON_1)).block();
+        final PersonResponse person2 = service.createPerson(Mono.just(PERSON_2)).block();
         return Map.of("id1", person1.getId(), "id2", person2.getId());
     }
 }
